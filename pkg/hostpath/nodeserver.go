@@ -498,6 +498,16 @@ func (hp *hostPath) NodeExpandVolume(ctx context.Context, req *csi.NodeExpandVol
 		return nil, status.Errorf(codes.OutOfRange, "Requested capacity %d exceeds maximum allowed %d", capacity, hp.config.MaxVolumeExpansionSizeNode)
 	}
 
+	// if size is 14GB then throw invalid argument
+	if capacity == 15032385536 {
+		return nil, status.Errorf(codes.InvalidArgument, "Requested capacity %d exceeds maximum allowed %d", capacity, 15032385536)
+	}
+
+	// 13GB will thrown permission denied errors
+	if capacity == 13958643712 {
+		return nil, status.Errorf(codes.PermissionDenied, "Requested capacity %d exceeeds the permission", capacity)
+	}
+
 	info, err := os.Stat(volPath)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "Could not get file information from %s: %v", volPath, err)

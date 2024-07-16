@@ -773,8 +773,18 @@ func (hp *hostPath) ControllerExpandVolume(ctx context.Context, req *csi.Control
 	}
 
 	capacity := int64(capRange.GetRequiredBytes())
+	klog.Infof("capacity is %d", capacity)
+
 	if capacity > hp.config.MaxVolumeSize {
 		return nil, status.Errorf(codes.OutOfRange, "Requested capacity %d exceeds maximum allowed %d", capacity, hp.config.MaxVolumeSize)
+	}
+
+	if capacity == 10737418204 {
+		return nil, status.Errorf(codes.InvalidArgument, "Requested capacity %d exceeds maximum allowed %d", capacity, 10737418204)
+	}
+
+	if capacity == 12884901888 {
+		return nil, status.Errorf(codes.PermissionDenied, "Requested capacity %d exceeeds the permission", capacity)
 	}
 
 	// Lock before acting on global state. A production-quality
