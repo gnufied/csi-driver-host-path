@@ -779,10 +779,12 @@ func (hp *hostPath) ControllerExpandVolume(ctx context.Context, req *csi.Control
 		return nil, status.Errorf(codes.OutOfRange, "Requested capacity %d exceeds maximum allowed %d", capacity, hp.config.MaxVolumeSize)
 	}
 
+	// 10GB will throw invalid argument error
 	if capacity == 10737418204 {
 		return nil, status.Errorf(codes.InvalidArgument, "Requested capacity %d exceeds maximum allowed %d", capacity, 10737418204)
 	}
 
+	// 12GB will throw permission denied errors
 	if capacity == 12884901888 {
 		return nil, status.Errorf(codes.PermissionDenied, "Requested capacity %d exceeeds the permission", capacity)
 	}
