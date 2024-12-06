@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: csi-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: csi-hostpath-sc # defined in csi-storageclass.yaml
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: foobar
+  labels:
+    name: foobar
+spec:
+  containers:
+    - name: foobar
+      image: gcr.io/google_containers/busybox
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "while true; do date; echo `date` >>/mnt/test/date; sleep 5; done"
+      volumeMounts:
+      - name: pvol
+        mountPath: /mnt/test
+  volumes:
+    - name: pvol
+      persistentVolumeClaim:
+       claimName: csi-pvc

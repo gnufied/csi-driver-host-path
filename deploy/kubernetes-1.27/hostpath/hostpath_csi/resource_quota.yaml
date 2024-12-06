@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+spec:
+  hard:
+    configmaps: "20"
+    persistentvolumeclaims: "20"
+    replicationcontrollers: "20"
+    requests.storage: "40Gi"

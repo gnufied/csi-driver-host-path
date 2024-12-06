@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-with-vol
+  labels:
+    name: nginx-with-vol
+spec:
+  containers:
+    - name: nginx-with-vol
+      image: nginx
+      ports:
+        - containerPort: 80
+          name: "http-server"
+      volumeMounts:
+      - mountPath: "/usr/share/nginx/html"
+        name: pvol
+  volumes:
+    - name: pvol
+      persistentVolumeClaim:
+       claimName: csi-delayed-pvc
